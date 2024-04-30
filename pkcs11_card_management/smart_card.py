@@ -1,10 +1,10 @@
 from json import load
 
-from certificate_factory import CertificateFactory
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import SECP384R1
 from pkcs11_cryptography_keys import (
     KeyTypes,
+    Pin4Token,
     PKCS11KeyUsageAll,
     PKCS11KeyUsageAllNoDerive,
     PKCS11KeyUsageEncyrption,
@@ -12,6 +12,8 @@ from pkcs11_cryptography_keys import (
     PKCS11URIAdminSession,
     PKCS11URIKeySession,
 )
+
+from pkcs11_card_management.certificate_factory import CertificateFactory
 
 _smart_card_key_usage: dict[KeyTypes, dict] = {
     KeyTypes.EC: {
@@ -116,14 +118,18 @@ class SmartCard(object):
     ) -> bool:
         ret = False
         for key_profile in self._profile:
-            print(key_profile["name"])
-            admin = PKCS11URIAdminSession(key_profile["uri"], not so_to_create)
-            key_session = PKCS11URIKeySession(key_profile["uri"])
+            nm = key_profile["name"]
+            admin = PKCS11URIAdminSession(
+                key_profile["uri"], not so_to_create, Pin4Token(nm)
+            )
+            key_session = PKCS11URIKeySession(key_profile["uri"], Pin4Token(nm))
             sig_session = None
             if "cert_sig" in key_profile:
-                sig_session = PKCS11URIKeySession(key_profile["cert_sig"])
+                sig_session = PKCS11URIKeySession(
+                    key_profile["cert_sig"], Pin4Token(nm)
+                )
             elif signature_uri is not None:
-                sig_session = PKCS11URIKeySession(signature_uri)
+                sig_session = PKCS11URIKeySession(signature_uri, Pin4Token(nm))
             ky = key_profile["key"]
             key_data = {}
             key_data.update(

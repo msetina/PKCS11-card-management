@@ -13,9 +13,9 @@ jobs:
       - uses: actions/setup-python@v5
       - run: pip install --upgrade pip isort black
       - name: Check import order
-        run: isort --profile black --line-length 80 --check pkcs11_cryptography_keys*
+        run: isort --profile black --line-length 80 --check pkcs11_card_management*
       - name: Run Black
-        run: black -S --line-length 80 --check pkcs11_cryptography_keys*
+        run: black -S --line-length 80 --check pkcs11_card_management*
   mypy:
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +26,5 @@ jobs:
         shell: bash
         run: sudo apt install swig
       - name: Run mypy
-        run: mypy pkcs11_cryptography_keys
+        run: mypy pkcs11_card_management
     

@@ -17,4 +17,4 @@ personal_data = {
 }
 
 
-sc(personal_data)
+sc.create_keys_and_certificates(personal_data)

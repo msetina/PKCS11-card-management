@@ -1,0 +1,14 @@
+[
+    {
+        "name":"Test",
+        "uri": "pkcs11:model=SoftHSM%20v2;manufacturer=SoftHSM%20project;serial=c968260f8e6b7ade;token=A%20token;id=%01;object=Test%20key?module-path=/usr/lib/softhsm/libsofthsm2.so",
+        "certificate": {
+            "key_usage": ["code_sign"],
+            "ca": false            
+        },
+        "key": {     
+            "key_type":"secp384r1",       
+            "key_usage": "signature"
+        }
+    }
+]
