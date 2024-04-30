@@ -1,0 +1,40 @@
+[
+    {
+        "name":"Signature",
+        "uri": "pkcs11:model=PKCS%2315%20emulated;manufacturer=ZeitControl;token=OpenPGP%20card%20%28User%20PIN%20%28sig%29%29;id=%01;object=Signature%20key?module-path=/usr/lib/opensc-pkcs11.so",
+        "certificate": {
+            "key_usage": ["code_sign"],
+            "ca": false            
+        },
+        "key": {     
+            "key_type":"secp384r1",       
+            "key_usage": "signature"
+        }
+    },
+    {
+        "name":"Encryption",
+        "uri": "pkcs11:model=PKCS%2315%20emulated;manufacturer=ZeitControl;token=OpenPGP%20card%20%28User%20PIN%29;id=%02;object=Encryption%20key?module-path=/usr/lib/opensc-pkcs11.so",
+        "certificate": {
+            "key_usage": ["email_protect"],
+            "ca": false            
+        },
+        "cert_sig":"pkcs11:model=PKCS%2315%20emulated;manufacturer=ZeitControl;token=OpenPGP%20card%20%28User%20PIN%20%28sig%29%29;id=%01;object=Signature%20key?module-path=/usr/lib/opensc-pkcs11.so",
+        "key": {        
+            "key_type":"rsa4096",    
+            "key_usage": "encryption"
+        }
+    },
+    {
+        "name":"Authentication",
+        "uri": "pkcs11:model=PKCS%2315%20emulated;manufacturer=ZeitControl;token=OpenPGP%20card%20%28User%20PIN%29;id=%03;object=Authentication%20key?module-path=/usr/lib/opensc-pkcs11.so",
+        "certificate": {
+            "key_usage": ["client_auth", "sc_logon"],
+            "ca": false            
+        },
+        "cert_sig":"pkcs11:model=PKCS%2315%20emulated;manufacturer=ZeitControl;token=OpenPGP%20card%20%28User%20PIN%20%28sig%29%29;id=%01;object=Signature%20key?module-path=/usr/lib/opensc-pkcs11.so",
+        "key": { 
+            "key_type":"rsa4096",
+            "key_usage": "all"
+        }
+    }    
+]
