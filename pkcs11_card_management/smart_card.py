@@ -13,7 +13,7 @@ from pkcs11_cryptography_keys import (
     PKCS11URIKeySession,
 )
 
-from pkcs11_card_management.certificate_factory import CertificateFactory
+from .certificate_factory import CertificateFactory
 
 _smart_card_key_usage: dict[KeyTypes, dict] = {
     KeyTypes.EC: {
