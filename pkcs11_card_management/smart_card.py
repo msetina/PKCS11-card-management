@@ -1,4 +1,5 @@
 from json import load
+from logging import Logger
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import SECP384R1
@@ -49,12 +50,15 @@ _smart_card_key_types: dict[str, dict] = {
 
 
 class SmartCard(object):
-    def __init__(self) -> None:
+    def __init__(self, logger: Logger | None = None) -> None:
         self._profile: dict = {}
+        self._logger = (
+            logger if logger is not None else Logger("SmartCard prepare")
+        )
 
     @classmethod
-    def from_profile(cls, profile_file: str):
-        ret = cls()
+    def from_profile(cls, profile_file: str, logger: Logger | None = None):
+        ret = cls(logger)
         with open(profile_file) as p:
             ret._profile = load(p)
         return ret
@@ -63,9 +67,10 @@ class SmartCard(object):
         ret = False
         with admin as current_admin:
             if current_admin is not None:
-                a = current_admin.delete_key_pair()
-                print(a)
+                if current_admin.delete_key_pair():
+                    self._logger.info("Keypair deleted")
                 priv_key = current_admin.create_key_pair(**params)
+                self._logger.info("Keypair created")
                 ret = True
         return ret
 
@@ -76,7 +81,7 @@ class SmartCard(object):
         params: dict,
         sig_session: PKCS11URIKeySession | None,
     ):
-        factory = CertificateFactory()
+        factory = CertificateFactory(self._logger)
         factory.prep_cert_data(params)
 
         # # Slovenija za servis ESEI
@@ -102,12 +107,12 @@ class SmartCard(object):
 
         if certificate != None:
             with admin as current_admin:
-                print("writing")
+                self._logger.info("Writing key to the card.")
                 if current_admin is not None:
                     current_admin.delete_certificate()
                     current_admin.write_certificate(certificate)
-                    print("written")
-        print("end")
+                    self._logger.info("Key written to the card.")
+        self._logger.info("Certificate creation ended")
 
     def create_keys_and_certificates(
         self,
@@ -120,16 +125,23 @@ class SmartCard(object):
         for key_profile in self._profile:
             nm = key_profile["name"]
             admin = PKCS11URIAdminSession(
-                key_profile["uri"], not so_to_create, Pin4Token(nm)
+                key_profile["uri"],
+                not so_to_create,
+                Pin4Token(nm),
+                self._logger,
             )
-            key_session = PKCS11URIKeySession(key_profile["uri"], Pin4Token(nm))
+            key_session = PKCS11URIKeySession(
+                key_profile["uri"], Pin4Token(nm), self._logger
+            )
             sig_session = None
             if "cert_sig" in key_profile:
                 sig_session = PKCS11URIKeySession(
-                    key_profile["cert_sig"], Pin4Token(nm)
+                    key_profile["cert_sig"], Pin4Token(nm), self._logger
                 )
             elif signature_uri is not None:
-                sig_session = PKCS11URIKeySession(signature_uri, Pin4Token(nm))
+                sig_session = PKCS11URIKeySession(
+                    signature_uri, Pin4Token(nm), self._logger
+                )
             ky = key_profile["key"]
             key_data = {}
             key_data.update(
@@ -161,10 +173,11 @@ class SmartCard(object):
                     )
                     ret = True
                 else:
+                    self._logger.info("Key session was not present")
                     ret = False
             else:
                 ret = False
-                print("Key was not created!")
+                self._logger.info("Key was not created!")
                 break
 
         return ret

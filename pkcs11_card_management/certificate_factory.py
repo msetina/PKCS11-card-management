@@ -1,4 +1,5 @@
 import datetime
+from logging import Logger
 from typing import Callable
 
 from cryptography import x509
@@ -19,7 +20,8 @@ class ExtensionCarrier(object):
 
 
 class CertificateFactory(object):
-    def __init__(self) -> None:
+    def __init__(self, logger: Logger) -> None:
+        self._logger = logger
         self.__builder: x509.CertificateBuilder | None = None
         self.__subject: x509.Name | None = None
         self.__is_ca = False
@@ -71,6 +73,7 @@ class CertificateFactory(object):
         if key_usages:
             return ExtensionCarrier(False, x509.ExtendedKeyUsage(key_usages))
         else:
+            self._logger.info("Key usage extensions could not be created")
             return None
 
     def __add_alternative_name_extensions(
@@ -84,6 +87,9 @@ class CertificateFactory(object):
                 False, x509.SubjectAlternativeName(ext_names)
             )
         else:
+            self._logger.info(
+                "Alternative name extensions could not be created"
+            )
             return None
 
     # <Extension(oid=<ObjectIdentifier(oid=2.5.29.31, name=cRLDistributionPoints)>, critical=False, value=<CRLDistributionPoints([<DistributionPoint(full_name=[<UniformResourceIdentifier(value='http://si-trust-data.gov.si/crl/si-trust-eid-nizka-raven.crl')>], relative_name=None, reasons=None, crl_issuer=None)>])>)>
@@ -103,6 +109,7 @@ class CertificateFactory(object):
             ]
             return ExtensionCarrier(False, x509.CRLDistributionPoints(dps))
         else:
+            self._logger.info("CRL url extensions could not be created")
             return None
 
     # <Extension(oid=<ObjectIdentifier(oid=1.3.6.1.5.5.7.1.1, name=authorityInfoAccess)>, critical=False, value=<AuthorityInformationAccess([<AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.2, name=caIssuers)>, access_location=<UniformResourceIdentifier(value='http://si-trust-data.gov.si/crt/si-trust-eid-nizka-raven.cer')>)>, <AccessDescription(access_method=<ObjectIdentifier(oid=1.3.6.1.5.5.7.48.1, name=OCSP)>, access_location=<UniformResourceIdentifier(value='http://si-trust-ocsp.gov.si/eid')>)>])>)>
@@ -129,7 +136,11 @@ class CertificateFactory(object):
             return ExtensionCarrier(
                 False, x509.AuthorityInformationAccess(auth_info_access)
             )
-        return None
+        else:
+            self._logger.info(
+                "URLs for Authority information were not provided"
+            )
+            return None
 
     # TODO
     # # <Extension(oid=<ObjectIdentifier(oid=2.5.29.32, name=certificatePolicies)>, critical=False, value=<CertificatePolicies([<PolicyInformation(policy_identifier=<ObjectIdentifier(oid=1.3.6.1.4.1.6105.12.1.1, name=Unknown OID)>, policy_qualifiers=['https://www.si-trust.gov.si/cps/'])>])>)>
