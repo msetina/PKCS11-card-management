@@ -1,8 +1,17 @@
+from logging import INFO, StreamHandler, getLogger
+from sys import stdout
+
 from pkcs11_card_management.smart_card import SmartCard
 
 _cards = {"openPGP_ZeitControl": "openpgp_ZeitControl_card.json"}
 
-sc = SmartCard.from_profile(_cards["openPGP_ZeitControl"])
+ch = StreamHandler(stdout)
+ch.setLevel(INFO)
+logger = getLogger("Prepare a smartcard")
+logger.setLevel(INFO)
+logger.addHandler(ch)
+
+sc = SmartCard.from_profile(_cards["openPGP_ZeitControl"], logger)
 
 personal_data = {
     "country": "SI",
