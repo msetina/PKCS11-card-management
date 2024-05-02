@@ -1,7 +1,7 @@
 [
     {
         "name":"Test",
-        "uri": "pkcs11:model=SoftHSM%20v2;manufacturer=SoftHSM%20project;serial=c968260f8e6b7ade;token=A%20token;id=%01;object=Test%20key?module-path=/usr/lib/softhsm/libsofthsm2.so;pin-value=1234",
+        "uri": "pkcs11:model=SoftHSM%20v2;manufacturer=SoftHSM%20project;token=A%20token;id=%01;object=Test%20key?module-path=/usr/lib/softhsm/libsofthsm2.so;pin-value=1234",
         "certificate": {
             "key_usage": ["code_sign","client_auth", "sc_logon","email_protect"],
             "ca": false            
