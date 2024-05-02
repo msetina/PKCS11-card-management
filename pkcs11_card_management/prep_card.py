@@ -1,4 +1,4 @@
-from .smart_card import SmartCard
+from pkcs11_card_management.smart_card import SmartCard
 
 _cards = {"openPGP_ZeitControl": "openpgp_ZeitControl_card.json"}
 
