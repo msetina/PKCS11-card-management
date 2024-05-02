@@ -14,7 +14,7 @@ from pkcs11_cryptography_keys import (
     PKCS11URIKeySession,
 )
 
-from .certificate_factory import CertificateFactory
+from pkcs11_card_management.certificate_factory import CertificateFactory
 
 _smart_card_key_usage: dict[KeyTypes, dict] = {
     KeyTypes.EC: {
@@ -127,20 +127,26 @@ class SmartCard(object):
             admin = PKCS11URIAdminSession(
                 key_profile["uri"],
                 not so_to_create,
-                Pin4Token(nm),
+                Pin4Token(nm, "Creating keys."),
                 self._logger,
             )
             key_session = PKCS11URIKeySession(
-                key_profile["uri"], Pin4Token(nm), self._logger
+                key_profile["uri"],
+                Pin4Token(nm, "Adding key to certificate."),
+                self._logger,
             )
             sig_session = None
             if "cert_sig" in key_profile:
                 sig_session = PKCS11URIKeySession(
-                    key_profile["cert_sig"], Pin4Token(nm), self._logger
+                    key_profile["cert_sig"],
+                    Pin4Token(nm, "Signing certificate with provided key"),
+                    self._logger,
                 )
             elif signature_uri is not None:
                 sig_session = PKCS11URIKeySession(
-                    signature_uri, Pin4Token(nm), self._logger
+                    signature_uri,
+                    Pin4Token(nm, "Signing certificate with provided key"),
+                    self._logger,
                 )
             ky = key_profile["key"]
             key_data = {}
