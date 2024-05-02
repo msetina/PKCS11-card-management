@@ -1,5 +1,5 @@
 from json import load
-from logging import Logger
+from logging import Logger, getLogger
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import SECP384R1
@@ -53,7 +53,7 @@ class SmartCard(object):
     def __init__(self, logger: Logger | None = None) -> None:
         self._profile: dict = {}
         self._logger = (
-            logger if logger is not None else Logger("SmartCard prepare")
+            logger if logger is not None else getLogger("SmartCard prepare")
         )
 
     @classmethod
