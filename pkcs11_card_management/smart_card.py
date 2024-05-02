@@ -107,11 +107,11 @@ class SmartCard(object):
 
         if certificate != None:
             with admin as current_admin:
-                self._logger.info("Writing key to the card.")
+                self._logger.info("Writing certificate to the card.")
                 if current_admin is not None:
                     current_admin.delete_certificate()
                     current_admin.write_certificate(certificate)
-                    self._logger.info("Key written to the card.")
+                    self._logger.info("Certificate written to the card.")
         self._logger.info("Certificate creation ended")
 
     def create_keys_and_certificates(
