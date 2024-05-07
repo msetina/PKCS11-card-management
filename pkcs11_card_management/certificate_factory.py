@@ -145,6 +145,7 @@ class CertificateFactory(object):
     # TODO
     # # <Extension(oid=<ObjectIdentifier(oid=2.5.29.32, name=certificatePolicies)>, critical=False, value=<CertificatePolicies([<PolicyInformation(policy_identifier=<ObjectIdentifier(oid=1.3.6.1.4.1.6105.12.1.1, name=Unknown OID)>, policy_qualifiers=['https://www.si-trust.gov.si/cps/'])>])>)>
 
+    # Prepare data from personal data in params dict
     def prep_cert_data(self, params: dict) -> None:
         self.__builder = x509.CertificateBuilder()
         self.__builder = self.__builder.serial_number(
@@ -190,6 +191,7 @@ class CertificateFactory(object):
             critical=True,
         )
 
+    ##Make certificate with provided keys
     def make_certificate(
         self,
         certificate_key,
