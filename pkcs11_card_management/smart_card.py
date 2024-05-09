@@ -1,7 +1,8 @@
+from __future__ import annotations
 from enum import Enum
 from json import load
 from logging import Logger, getLogger
-from typing import Type
+from typing import Sequence, Type
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -79,7 +80,9 @@ class SmartCard(object):
         )
 
     @classmethod
-    def from_profile(cls, profile_file: str, logger: Logger | None = None):
+    def from_profile(
+        cls, profile_file: str, logger: Logger | None = None
+    ) -> SmartCard:
         ret = cls(logger)
         with open(profile_file) as p:
             ret._profile = load(p)
@@ -328,7 +331,7 @@ class SmartCard(object):
 
     def create_keys_and_certificates_serial(
         self,
-        personal_data: dict[str, str] | None = None,
+        personal_data: dict[str, Sequence[str]] | None = None,
         num_days: int = 30,
         signature_uri: str | None = None,
         so_to_create: bool = True,
@@ -374,7 +377,7 @@ class SmartCard(object):
 
     def create_keys_and_certificates(
         self,
-        personal_data: dict[str, str] | None = None,
+        personal_data: dict[str, Sequence[str]] | None = None,
         num_days: int = 30,
         signature_uri: str | None = None,
         so_to_create: bool = True,
