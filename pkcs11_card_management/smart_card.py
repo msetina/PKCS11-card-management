@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from enum import Enum
 from json import load
 from logging import Logger, getLogger
