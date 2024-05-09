@@ -10,17 +10,17 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.hazmat.primitives.serialization import pkcs12
-from cryptography.x509 import Certificate, KeyUsage, ExtensionNotFound
+from cryptography.x509 import Certificate, ExtensionNotFound, KeyUsage
 from pkcs11_cryptography_keys import (
     KeyTypes,
     Pin4Token,
+    PKCS11KeyUsage,
     PKCS11KeyUsageAll,
     PKCS11KeyUsageAllNoDerive,
     PKCS11KeyUsageEncyrption,
     PKCS11KeyUsageSignature,
     PKCS11URIAdminSession,
     PKCS11URIKeySession,
-    PKCS11KeyUsage,
 )
 
 from pkcs11_card_management.certificate_factory import CertificateFactory
