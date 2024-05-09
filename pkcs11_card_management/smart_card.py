@@ -1,6 +1,7 @@
 from enum import Enum
 from json import load
 from logging import Logger, getLogger
+from typing import Type
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -64,7 +65,7 @@ _smart_card_key_types: dict[str, dict] = {
     },
 }
 
-_cryptography_key_types: dict[PrivateKeyTypes, KeyTypes] = {
+_cryptography_key_types: dict[Type[PrivateKeyTypes], tuple[KeyTypes, str]] = {
     RSAPrivateKey: (KeyTypes.RSA, "RSA_private_key"),
     EllipticCurvePrivateKey: (KeyTypes.EC, "EC_private_key"),
 }
