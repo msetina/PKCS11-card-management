@@ -1,0 +1,10 @@
+[
+    {
+        "name":"Test",
+        "uri": "pkcs11:model=SoftHSM%20v2;manufacturer=SoftHSM%20project;token=A%20token;id=%01;object=Test%20key?module-path=/usr/lib/softhsm/libsofthsm2.so;pin-value=1234",        
+        "key": {     
+            "key_file":"card_management_tests/test_key_and_cert.p12",
+            "file_password":"123456"           
+        }
+    }
+]
