@@ -221,7 +221,7 @@ class SmartCard(object):
         self, so_to_create: bool, signature_uri: str | None = None
     ):
         for key_profile in self._profile:
-            if "certificate" in key_profile and "key" in key_profile:
+            if "key" in key_profile:
                 nm = key_profile["name"]
                 admin = PKCS11URIAdminSession(
                     key_profile["uri"],
@@ -247,7 +247,9 @@ class SmartCard(object):
                         Pin4Token(nm, "Signing certificate with provided key"),
                         self._logger,
                     )
-                cert_def = key_profile["certificate"]
+                cert_def = None
+                if "certificate" in key_profile:
+                    cert_def = key_profile["certificate"]
                 key_def = key_profile["key"]
                 yield key_session, sig_session, admin, key_def, cert_def
 
@@ -398,7 +400,7 @@ class SmartCard(object):
                 self._logger.info("Key was not created! {0}".format(key_def))
                 break
             elif creation == KeyCreation.KeyCreated:
-                if personal_data is not None:
+                if cert_def is not None and personal_data is not None:
                     ret = self._create_certificate_from_profile(
                         admin_session,
                         key_session,
@@ -408,9 +410,13 @@ class SmartCard(object):
                         num_days,
                     )
                 else:
+                    self._logger.info(
+                        "Data to prepare certificate was not provided!"
+                    )
                     ret = False
                 if not ret:
                     self._logger.info("Certificate was not created!")
                     break
-
+            elif creation == KeyCreation.AllCreated:
+                ret = True
         return ret
