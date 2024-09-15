@@ -24,6 +24,7 @@ from pkcs11_cryptography_keys import (
     PKCS11KeyUsageSignature,
     PKCS11URIAdminSession,
     PKCS11URIKeySession,
+    PKCS11URISlotAdminSession,
 )
 
 from pkcs11_card_management.certificate_factory import CertificateFactory
@@ -330,6 +331,30 @@ class SmartCard(object):
         else:
             self._logger.info("Key session was not present")
             ret = False
+        return ret
+
+    def init_token(self):
+        # from pkcs11_cryptography_keys import create_token_on_all_slots
+        # create_token_on_all_slots("123456", "A token", "1234", _pkcs11lib)
+        pass
+
+    def change_user_pin(self, name: str, old_pin: str, new_pin: str) -> bool:
+        ret = False
+        for key_profile in self._profile:
+            if "key" in key_profile:
+                nm = key_profile["name"]
+                if nm == name:
+                    if new_pin.isnumeric():
+                        sa_session = PKCS11URISlotAdminSession(
+                            key_profile["uri"],
+                            True,
+                            Pin4Token(nm, "Changing pin"),
+                            self._logger,
+                        )
+                        with sa_session as slot:
+                            if slot is not None:
+                                slot.change_pin(old_pin, new_pin)
+                                ret = True
         return ret
 
     def create_keys_and_certificates_serial(
