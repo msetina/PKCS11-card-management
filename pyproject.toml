@@ -49,7 +49,7 @@ Homepage = "https://github.com/msetina/PKCS11-card-management"
 testing = [
     "PKCS11-card-management",
     "pytest>=6.1.1",
-    "pytest-cov>=4.0,<5.1",
+    "pytest-cov>=4.0,<6.1",
     "PKCS11-cryptography-keys>=0.0.3",
 ]
 mypy = [
